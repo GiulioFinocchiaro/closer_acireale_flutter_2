@@ -150,7 +150,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Gestione token scaduto
-  void showTokenExpiredModal() {
+  void showTokenExpiredModal1() {
     _showTokenExpiredModal = true;
     notifyListeners();
   }
@@ -168,7 +168,7 @@ class AuthProvider extends ChangeNotifier {
         errorString.contains('Unauthorized') ||
         errorString.contains('Token expired') ||
         errorString.contains('Invalid token')) {
-      showTokenExpiredModal();
+      showTokenExpiredModal1();
     } else {
       _setError('Errore: $errorString');
     }

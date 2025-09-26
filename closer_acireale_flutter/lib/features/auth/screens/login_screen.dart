@@ -9,7 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/responsive_utils.dart';
 import '../../../core/utils/responsive_extensions.dart';
 import '../../../shared/widgets/custom_button.dart';
-import '../../../shared/widgets/custom_text_field.dart;
+import '../../../shared/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
