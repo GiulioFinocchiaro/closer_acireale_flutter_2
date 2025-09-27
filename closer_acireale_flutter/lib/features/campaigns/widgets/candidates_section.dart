@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/models/candidate_model.dart';
+import '../../../core/models/user_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
+import '../../../core/providers/candidates_provider.dart';
+import '../../candidates/widgets/candidate_form_modal.dart';
+import 'delete_confirm_dialog.dart';
 
 class CandidatesSection extends StatelessWidget {
   final List<Candidate> candidates;
