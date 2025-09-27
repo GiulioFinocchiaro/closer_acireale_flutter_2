@@ -14,6 +14,7 @@ import '../../../shared/widgets/custom_app_bar.dart';
 import '../../../shared/widgets/horizontal_menu.dart';
 import '../widgets/stats_card.dart';
 import '../widgets/dashboard_chart.dart';
+import '../widgets/global_timeline.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
