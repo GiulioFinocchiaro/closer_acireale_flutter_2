@@ -30,6 +30,17 @@ class _DashboardSchoolsScreenState extends State<DashboardSchoolsScreen> {
     showDialog(
       context: context,
       builder: (context) => const AddSchoolModal(),
+    ).then((result) {
+      if (result == true) {
+        _handleDashboard(); // Ricarica i dati dopo l'aggiunta
+      }
+    });
+  }
+
+  void _showAddSchoolModal() {
+    showDialog(
+      context: context,
+      builder: (context) => const AddSchoolModal(),
     );
   }
 
