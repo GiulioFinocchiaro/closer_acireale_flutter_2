@@ -215,7 +215,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (ResponsiveUtils.isMobile(context)) {
       return Column(
         children: [
-          _buildActivityChart(),
+          const GlobalTimeline(),
           SizedBox(height: 24.h),
           _buildMaterials(context.watch<SchoolsProvider>().lastestMaterialSingleSchool),
         ],
@@ -225,7 +225,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(flex: 2, child: _buildActivityChart()),
+        Expanded(flex: 2, child: const GlobalTimeline()),
         SizedBox(width: 24.w),
         Expanded(child: _buildMaterials(context.watch<SchoolsProvider>().lastestMaterialSingleSchool)),
       ],
