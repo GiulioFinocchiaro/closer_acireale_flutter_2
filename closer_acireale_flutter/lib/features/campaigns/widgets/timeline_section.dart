@@ -205,22 +205,18 @@ class TimelineSection extends StatelessWidget {
                     ),
                   ),
                   
-                  // Link
-                  if (item.link != null && item.link != '#') ...[
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: () {
-                        // TODO: Aprire link
-                      },
-                      child: const Text(
-                        'Visualizza',
-                        style: TextStyle(
-                          color: AppTheme.primaryBlue,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  // Link o dettagli
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => _showItemDetails(context, item),
+                    child: const Text(
+                      'Maggiori informazioni',
+                      style: TextStyle(
+                        color: AppTheme.primaryBlue,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
