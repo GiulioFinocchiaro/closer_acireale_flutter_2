@@ -226,6 +226,147 @@ class TimelineSection extends StatelessWidget {
     );
   }
 
+  void _showItemDetails(BuildContext context, TimelineItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.type == TimelineItemType.material ? 'Dettagli Materiale' : 'Dettagli Evento',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppTheme.textDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                    color: AppTheme.textMedium,
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
+              
+              // Icona e tipo
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: item.type == TimelineItemType.material 
+                        ? AppTheme.primaryBlue.withOpacity(0.1)
+                        : AppTheme.warningYellow.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      item.type == TimelineItemType.material ? Icons.description : Icons.event,
+                      color: item.type == TimelineItemType.material 
+                        ? AppTheme.primaryBlue 
+                        : AppTheme.warningYellow,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    item.type == TimelineItemType.material ? 'Materiale' : 'Evento',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppTheme.textMedium,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Dettagli
+              _buildDetailRow('Titolo:', item.title),
+              const SizedBox(height: 12),
+              _buildDetailRow('Descrizione:', item.description),
+              const SizedBox(height: 12),
+              _buildDetailRow(
+                'Data:', 
+                DateFormat('EEEE d MMMM y \'alle\' HH:mm', 'it_IT').format(item.date)
+              ),
+              if (item.link != null && item.link!.isNotEmpty && item.link != '#') ...[
+                const SizedBox(height: 12),
+                _buildDetailRow('Link:', item.link!),
+              ],
+              
+              const SizedBox(height: 24),
+              
+              // Azioni
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (item.link != null && item.link!.isNotEmpty && item.link != '#') ...[
+                    TextButton.icon(
+                      onPressed: () {
+                        // TODO: Aprire link
+                      },
+                      icon: const Icon(Icons.open_in_new),
+                      label: const Text('Apri Link'),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Chiudi'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textDark,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              color: AppTheme.textMedium,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   String _formatDate(String dateStr) {
     try {
       final dateTime = DateTime.parse(dateStr); // converte stringa in DateTime
