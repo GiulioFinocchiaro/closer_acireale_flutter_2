@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
 import '../../../core/constants/app_constants.dart';
 import 'material_preview_dialog.dart';
+import 'all_materials_modal.dart';
 
 class MaterialSection extends StatelessWidget {
   final List<MaterialModal> materials;
