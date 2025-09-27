@@ -10,10 +10,14 @@ import 'delete_confirm_dialog.dart';
 
 class CandidatesSection extends StatelessWidget {
   final List<Candidate> candidates;
+  final int? campaignId;
+  final VoidCallback? onCandidatesChanged;
 
   const CandidatesSection({
     super.key,
     required this.candidates,
+    this.campaignId,
+    this.onCandidatesChanged,
   });
 
   @override
