@@ -26,6 +26,13 @@ class _DashboardSchoolsScreenState extends State<DashboardSchoolsScreen> {
     await schoolsProvider.getSchool();
   }
 
+  void _showAddSchoolModal() {
+    showDialog(
+      context: context,
+      builder: (context) => const AddSchoolModal(),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
