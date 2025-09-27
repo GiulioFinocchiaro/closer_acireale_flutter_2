@@ -86,7 +86,15 @@ class EventSection extends StatelessWidget {
             Center(
               child: TextButton(
                 onPressed: () {
-                  // TODO: Implementare pagina "Vedi tutti gli eventi"
+                  if (campaignId != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AllEventsModal(
+                        events: events,
+                        campaignId: campaignId!,
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   'Vedi tutti i ${events.length} eventi',
