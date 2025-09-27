@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../shared/widgets/web_safe_image.dart';
 
 class MaterialPreviewDialog extends StatelessWidget {
   final String title;
