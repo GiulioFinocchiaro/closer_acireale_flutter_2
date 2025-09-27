@@ -105,7 +105,15 @@ class MaterialSection extends StatelessWidget {
             Center(
               child: TextButton(
                 onPressed: () {
-                  // TODO: Implementare pagina "Vedi tutti i materiali"
+                  if (campaignId != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AllMaterialsModal(
+                        materials: materials,
+                        campaignId: campaignId!,
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   'Vedi tutti i ${materials.length} materiali',
