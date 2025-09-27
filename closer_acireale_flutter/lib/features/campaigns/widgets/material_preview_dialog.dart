@@ -108,7 +108,14 @@ class MaterialPreviewDialog extends StatelessWidget {
           child: Image.network(
             _fullUrl,
             fit: BoxFit.contain,
+            headers: const {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+              'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
+            },
             errorBuilder: (context, error, stackTrace) {
+              print('Errore caricamento immagine: $error');
+              print('URL: $_fullUrl');
               return _buildErrorWidget(context);
             },
             loadingBuilder: (context, child, loadingProgress) {
