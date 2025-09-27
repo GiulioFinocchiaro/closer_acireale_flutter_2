@@ -8,6 +8,7 @@ import '../../../core/utils/responsive_utils.dart';
 import '../../../shared/widgets/custom_app_bar.dart';
 import '../widgets/stats_card.dart';
 import '../widgets/schools_overview.dart';
+import '../widgets/add_school_modal.dart';
 
 class DashboardSchoolsScreen extends StatefulWidget {
   const DashboardSchoolsScreen({super.key});
