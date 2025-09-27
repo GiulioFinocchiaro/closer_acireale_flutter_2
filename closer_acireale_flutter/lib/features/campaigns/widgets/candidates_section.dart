@@ -39,12 +39,25 @@ class CandidatesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Text(
-            'Candidati della Campagna',
-            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-              color: AppTheme.textDark,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Candidati della Campagna',
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  color: AppTheme.textDark,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => _showAddCandidateModal(context),
+                icon: const Icon(Icons.add),
+                label: const Text('Aggiungi Candidato'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+              ),
+            ],
           ),
           
           const SizedBox(height: 16),
