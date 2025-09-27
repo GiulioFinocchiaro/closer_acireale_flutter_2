@@ -8,11 +8,13 @@ import 'all_events_modal.dart';
 class EventSection extends StatelessWidget {
   final List<Event> events;
   final VoidCallback? onAddEvent;
+  final int? campaignId;
 
   const EventSection({
     super.key,
     required this.events,
     this.onAddEvent,
+    this.campaignId,
   });
 
   @override
