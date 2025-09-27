@@ -85,6 +85,19 @@ class CandidatesSection extends StatelessWidget {
     );
   }
 
+  void _showAddCandidateModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => CandidateFormModal(
+        campaignId: campaignId,
+        onCandidateAdded: () {
+          Navigator.of(context).pop();
+          onCandidatesChanged?.call();
+        },
+      ),
+    );
+  }
+
   Widget _buildCandidateItem(BuildContext context, Candidate candidate) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
