@@ -10,11 +10,13 @@ import 'all_materials_modal.dart';
 class MaterialSection extends StatelessWidget {
   final List<MaterialModal> materials;
   final VoidCallback? onAddMaterial;
+  final int? campaignId;
 
   const MaterialSection({
     super.key,
     required this.materials,
     this.onAddMaterial,
+    this.campaignId,
   });
 
   void _showMaterialPreview(BuildContext context, MaterialModal material) {
