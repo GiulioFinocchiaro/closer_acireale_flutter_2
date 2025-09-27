@@ -188,6 +188,8 @@ class _SingleCampaignScreenState extends State<SingleCampaignScreen> {
                         // Candidati
                         CandidatesSection(
                           candidates: campaign.candidates ?? [],
+                          campaignId: widget.campaignId,
+                          onCandidatesChanged: _loadCampaignDetails,
                         ),
                       ],
                     ),
