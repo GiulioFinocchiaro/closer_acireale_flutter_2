@@ -98,6 +98,73 @@ class CandidatesSection extends StatelessWidget {
     );
   }
 
+  void _showAddCandidateModal(BuildContext context) {
+    // Carica prima gli utenti idonei
+    final provider = Provider.of<CandidatesProvider>(context, listen: false);
+    provider.getEligibleUsers().then((_) {
+      showDialog(
+        context: context,
+        builder: (context) => CandidateFormModal(
+          title: 'Aggiungi Candidato alla Campagna',
+          onSave: (userId, classYear, description, photo, manifesto) async {
+            final success = await provider.addCandidate(
+              userId: userId,
+              classYear: classYear,
+              description: description,
+              photo: photo,
+              manifesto: manifesto,
+            );
+            if (success && context.mounted) {
+              Navigator.of(context).pop();
+              onCandidatesChanged?.call();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Candidato aggiunto con successo!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
+          },
+        ),
+      );
+    });
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Candidate candidate) {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteConfirmDialog(
+        title: 'Rimuovi Candidato',
+        content: 'Sei sicuro di voler rimuovere "${candidate.userName}" da questa campagna?',
+        onConfirm: () => _removeCandidate(context, candidate),
+      ),
+    );
+  }
+
+  Future<void> _removeCandidate(BuildContext context, Candidate candidate) async {
+    final provider = Provider.of<CandidatesProvider>(context, listen: false);
+    final success = await provider.deleteCandidate(candidate.id);
+    
+    if (context.mounted) {
+      if (success) {
+        onCandidatesChanged?.call();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Candidato rimosso con successo!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(provider.errorMessage ?? 'Errore durante la rimozione'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Widget _buildCandidateItem(BuildContext context, Candidate candidate) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -154,6 +221,14 @@ class CandidatesSection extends StatelessWidget {
                 ],
               ],
             ),
+          ),
+          
+          // Bottone rimuovi
+          IconButton(
+            onPressed: () => _showDeleteConfirmation(context, candidate),
+            icon: const Icon(Icons.remove_circle_outline),
+            color: AppTheme.errorRed,
+            tooltip: 'Rimuovi dalla campagna',
           ),
         ],
       ),
