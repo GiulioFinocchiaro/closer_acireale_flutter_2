@@ -161,6 +161,7 @@ class _SingleCampaignScreenState extends State<SingleCampaignScreen> {
                               child: MaterialSection(
                                 materials: campaign.materials ?? [],
                                 onAddMaterial: _showAddMaterialModal,
+                                campaignId: widget.campaignId,
                               ),
                             ),
                             const SizedBox(width: 24),
@@ -168,6 +169,7 @@ class _SingleCampaignScreenState extends State<SingleCampaignScreen> {
                               child: EventSection(
                                 events: campaign.events ?? [],
                                 onAddEvent: _showAddEventModal,
+                                campaignId: widget.campaignId,
                               ),
                             ),
                           ],
