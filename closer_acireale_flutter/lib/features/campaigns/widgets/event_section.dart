@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../core/models/event_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
+import 'all_events_modal.dart';
 
 class EventSection extends StatelessWidget {
   final List<Event> events;
