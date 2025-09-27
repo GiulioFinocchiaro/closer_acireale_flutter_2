@@ -86,19 +86,6 @@ class CandidatesSection extends StatelessWidget {
   }
 
   void _showAddCandidateModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CandidateFormModal(
-        campaignId: campaignId,
-        onCandidateAdded: () {
-          Navigator.of(context).pop();
-          onCandidatesChanged?.call();
-        },
-      ),
-    );
-  }
-
-  void _showAddCandidateModal(BuildContext context) {
     // Carica prima gli utenti idonei
     final provider = Provider.of<CandidatesProvider>(context, listen: false);
     provider.getEligibleUsers().then((_) {

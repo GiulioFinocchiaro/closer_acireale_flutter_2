@@ -113,7 +113,6 @@ class _AddSchoolModalState extends State<AddSchoolModal> {
                 controller: _schoolNameController,
                 label: 'Nome Scuola',
                 hint: 'Inserisci il nome della scuola',
-                prefixIcon: Icons.school,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Il nome della scuola è obbligatorio';
@@ -131,7 +130,6 @@ class _AddSchoolModalState extends State<AddSchoolModal> {
                 controller: _addressController,
                 label: 'Indirizzo',
                 hint: 'Inserisci l\'indirizzo della scuola',
-                prefixIcon: Icons.location_on,
                 maxLines: 2,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -147,7 +145,6 @@ class _AddSchoolModalState extends State<AddSchoolModal> {
                 controller: _emailController,
                 label: 'Email',
                 hint: 'Inserisci l\'email della scuola',
-                prefixIcon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -166,7 +163,6 @@ class _AddSchoolModalState extends State<AddSchoolModal> {
                 controller: _phoneController,
                 label: 'Telefono',
                 hint: 'Inserisci il numero di telefono',
-                prefixIcon: Icons.phone,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
