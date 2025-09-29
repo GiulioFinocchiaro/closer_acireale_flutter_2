@@ -97,14 +97,22 @@ class RoleProvider extends ChangeNotifier {
     required String color,
     required List<String> permissions,
   }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final schoolSelectedString = prefs.getString('school_selected');
+    int? school_id;
+    if (schoolSelectedString != null) {
+      final school = SchoolModel.fromJson(jsonDecode(schoolSelectedString));
+      school_id = school.id;
+    }
     try {
       await _apiService.post(
         '/roles/add',
         {
           'name': name,
-          'privilege_level': privilegeLevel,
+          'level': privilegeLevel,
           'color': color,
           'permissions': permissions,
+          'school_id':school_id,
         },
         token: _token,
       );

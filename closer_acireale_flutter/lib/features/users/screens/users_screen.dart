@@ -182,14 +182,16 @@ class _UsersScreenState extends State<UsersScreen> {
         children: [
           _buildSearchField(),
           SizedBox(height: 16.h),
-          _buildAddUserButton(),
+          if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.register_new_users'))
+            _buildAddUserButton(),
         ],
       )
           : Row(
         children: [
           Expanded(child: _buildSearchField()),
           SizedBox(width: 16.w),
-          _buildAddUserButton(),
+          if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.register_new_users'))
+            _buildAddUserButton(),
         ],
       ),
     );
@@ -219,10 +221,10 @@ class _UsersScreenState extends State<UsersScreen> {
 
   Widget _buildAddUserButton() {
     return CustomButton(
-      text: 'Registra Utente',
-      icon: Icons.add,
-      onPressed: () => _showEditAddUser(context),
-      width: ResponsiveUtils.isMobile(context) ? double.infinity : null,
+        text: 'Registra Utente',
+        icon: Icons.add,
+        onPressed: () => _showEditAddUser(context),
+        width: ResponsiveUtils.isMobile(context) ? double.infinity : null,
     );
   }
 

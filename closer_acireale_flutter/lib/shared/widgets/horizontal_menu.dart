@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../core/providers/auth_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive_utils.dart';
 
 class HorizontalMenu extends StatelessWidget {
   final String currentRoute;
-  
+
   const HorizontalMenu({
     super.key,
     required this.currentRoute,
@@ -22,53 +24,48 @@ class HorizontalMenu extends StatelessWidget {
       icon: Icons.people,
       label: 'Utenti',
       route: '/users',
+      requiredPermission: 'users.view_all',
     ),
     MenuItemData(
       icon: Icons.campaign,
       label: 'Campagne',
       route: '/campaigns',
+      requiredPermission: 'campaign.view_all',
     ),
     MenuItemData(
       icon: Icons.how_to_vote,
       label: 'Candidati',
       route: '/candidates',
+      requiredPermission: 'candidates.view_all',
     ),
     MenuItemData(
       icon: Icons.analytics,
       label: 'Grafiche',
       route: '/graphics',
+      requiredPermission: 'media.view_all',
     ),
     MenuItemData(
       icon: Icons.admin_panel_settings,
       label: 'Ruoli',
       route: '/roles',
-    ),
-    MenuItemData(
-      icon: Icons.help,
-      label: 'Aiuto',
-      route: '/help',
-    ),
-    MenuItemData(
-      icon: Icons.bar_chart,
-      label: 'Analisi',
-      route: '/analysis',
-    ),
-    MenuItemData(
-      icon: Icons.notifications,
-      label: 'Notifiche',
-      route: '/notifications',
+      requiredPermission: 'roles.view_all',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // Filtra gli item in base ai permessi
+    final filteredMenuItems = menuItems.where((item) {
+      if (item.requiredPermission == null) return true;
+      return authProvider.checkPermissionFromUser(item.requiredPermission!);
+    }).toList();
+
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: ResponsiveUtils.getSpacing(context, 
-          mobileSpacing: 16, 
-          tabletSpacing: 24, 
-          desktopSpacing: 32
-        ),
+        horizontal: ResponsiveUtils.getSpacing(context,
+            mobileSpacing: 16, tabletSpacing: 24, desktopSpacing: 32),
         vertical: 16.h,
       ),
       decoration: BoxDecoration(
@@ -83,39 +80,34 @@ class HorizontalMenu extends StatelessWidget {
         ],
       ),
       child: ResponsiveUtils.isMobile(context)
-          ? _buildMobileMenu(context)
-          : _buildDesktopMenu(context),
+          ? _buildMobileMenu(context, filteredMenuItems)
+          : _buildDesktopMenu(context, filteredMenuItems),
     );
   }
 
-  Widget _buildMobileMenu(BuildContext context) {
-    // Menu verticale per mobile
+  Widget _buildMobileMenu(BuildContext context, List<MenuItemData> items) {
     return Column(
-      children: menuItems.map((item) => _buildMenuItem(context, item)).toList(),
+      children: items.map((item) => _buildMenuItem(context, item)).toList(),
     );
   }
 
-  Widget _buildDesktopMenu(BuildContext context) {
-    // Menu orizzontale per desktop con overflow handling
+  Widget _buildDesktopMenu(BuildContext context, List<MenuItemData> items) {
     return Padding(
       padding: EdgeInsets.all(12.w),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Calcola quanti elementi possono stare nella larghezza disponibile
-          final itemWidth = 140.0; // Larghezza approssimativa di un item
+          final itemWidth = 140.0;
           final maxItems = (constraints.maxWidth / itemWidth).floor();
-          
-          if (menuItems.length <= maxItems) {
-            // Tutti gli elementi stanno in una riga
+
+          if (items.length <= maxItems) {
             return Wrap(
               spacing: 8.w,
-              children: menuItems.map((item) => _buildDesktopMenuItem(context, item)).toList(),
+              children: items.map((item) => _buildDesktopMenuItem(context, item)).toList(),
             );
           } else {
-            // Alcuni elementi vanno nel dropdown "Altro"
-            final visibleItems = menuItems.take(maxItems - 1).toList();
-            final hiddenItems = menuItems.skip(maxItems - 1).toList();
-            
+            final visibleItems = items.take(maxItems - 1).toList();
+            final hiddenItems = items.skip(maxItems - 1).toList();
+
             return Row(
               children: [
                 ...visibleItems.map((item) => Padding(
@@ -133,7 +125,7 @@ class HorizontalMenu extends StatelessWidget {
 
   Widget _buildMenuItem(BuildContext context, MenuItemData item) {
     final isActive = currentRoute == item.route;
-    
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -171,7 +163,7 @@ class HorizontalMenu extends StatelessWidget {
 
   Widget _buildDesktopMenuItem(BuildContext context, MenuItemData item) {
     final isActive = currentRoute == item.route;
-    
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -186,12 +178,12 @@ class HorizontalMenu extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: isActive
                 ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ]
                 : null,
           ),
           child: Row(
@@ -223,15 +215,15 @@ class HorizontalMenu extends StatelessWidget {
       onSelected: (item) => context.go(item.route),
       itemBuilder: (context) => items
           .map((item) => PopupMenuItem<MenuItemData>(
-                value: item,
-                child: Row(
-                  children: [
-                    Icon(item.icon, size: 18.w, color: AppTheme.textMedium),
-                    SizedBox(width: 12.w),
-                    Text(item.label),
-                  ],
-                ),
-              ))
+        value: item,
+        child: Row(
+          children: [
+            Icon(item.icon, size: 18.w, color: AppTheme.textMedium),
+            SizedBox(width: 12.w),
+            Text(item.label),
+          ],
+        ),
+      ))
           .toList(),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -274,10 +266,12 @@ class MenuItemData {
   final IconData icon;
   final String label;
   final String route;
+  final String? requiredPermission;
 
   const MenuItemData({
     required this.icon,
     required this.label,
     required this.route,
+    this.requiredPermission,
   });
 }

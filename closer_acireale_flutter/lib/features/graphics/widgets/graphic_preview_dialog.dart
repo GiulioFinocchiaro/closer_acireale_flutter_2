@@ -56,9 +56,9 @@ class GraphicPreviewDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Metadati
               Row(
                 children: [
@@ -77,9 +77,9 @@ class GraphicPreviewDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Descrizione
               Container(
                 width: double.infinity,
@@ -102,8 +102,8 @@ class GraphicPreviewDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      graphic.description.isNotEmpty 
-                          ? graphic.description 
+                      graphic.description.isNotEmpty
+                          ? graphic.description
                           : 'Nessuna descrizione disponibile',
                       style: TextStyle(
                         fontSize: 14.sp,
@@ -113,9 +113,9 @@ class GraphicPreviewDialog extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Preview immagine
               Expanded(
                 child: Container(
@@ -129,68 +129,70 @@ class GraphicPreviewDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.r),
                     child: graphic.isImage
                         ? Image.network(
-                            graphic.fullUrl,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _ErrorPlaceholder(
-                                message: 'Impossibile caricare l\'immagine',
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                          : null,
-                                    ),
-                                    SizedBox(height: 16.h),
-                                    Text(
-                                      'Caricamento in corso...',
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: AppTheme.textMedium,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  _getFileIcon(graphic.asset_type),
-                                  size: 64.w,
+                      graphic.fullUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Errore caricamento immagine preview: $error');
+                        print('URL: ${graphic.fullUrl}');
+                        return _ErrorPlaceholder(
+                          message: 'Impossibile caricare l\'immagine',
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                'Caricamento in corso...',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
                                   color: AppTheme.textMedium,
                                 ),
-                                SizedBox(height: 16.h),
-                                Text(
-                                  'File ${graphic.asset_type.toUpperCase()}',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.textMedium,
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-                                Text(
-                                  'Preview non disponibile per questo tipo di file',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: AppTheme.textLight,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                        : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            _getFileIcon(graphic.asset_type),
+                            size: 64.w,
+                            color: AppTheme.textMedium,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'File ${graphic.asset_type.toUpperCase()}',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textMedium,
                             ),
                           ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'Preview non disponibile per questo tipo di file',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppTheme.textLight,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),

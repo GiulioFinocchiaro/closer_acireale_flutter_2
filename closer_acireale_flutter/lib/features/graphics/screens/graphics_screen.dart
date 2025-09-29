@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -249,11 +250,12 @@ class _GraphicsScreenState extends State<GraphicsScreen> {
                             color: AppTheme.textDark,
                           ),
                         ),
-                        CustomButton(
-                          text: 'Aggiungi Grafica',
-                          icon: Icons.add,
-                          onPressed: _showAddGraphicModal,
-                        ),
+                        if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('media.upload'))
+                          CustomButton(
+                            text: 'Aggiungi Grafica',
+                            icon: Icons.add,
+                            onPressed: _showAddGraphicModal,
+                          ),
                       ],
                     ),
                     Container(

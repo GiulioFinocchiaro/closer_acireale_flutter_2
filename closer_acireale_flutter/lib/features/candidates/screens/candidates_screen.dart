@@ -1,3 +1,4 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -183,11 +184,12 @@ class _CandidatesScreenState extends State<CandidatesScreen> {
                             color: AppTheme.textDark,
                           ),
                         ),
-                        CustomButton(
-                          text: 'Aggiungi Candidato',
-                          icon: Icons.add,
-                          onPressed: _showAddCandidateModal,
-                        ),
+                        if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('candidates.create'))
+                          CustomButton(
+                            text: 'Aggiungi Candidato',
+                            icon: Icons.add,
+                            onPressed: _showAddCandidateModal,
+                          ),
                       ],
                     ),
                     Container(

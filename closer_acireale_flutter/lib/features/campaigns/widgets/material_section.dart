@@ -1,6 +1,8 @@
 import 'package:closer_acireale_flutter/core/models/material_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
 import '../../../core/constants/app_constants.dart';
@@ -87,18 +89,19 @@ class MaterialSection extends StatelessWidget {
           const SizedBox(height: 24),
           
           // Bottone aggiungi
-          if (onAddMaterial != null)
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onAddMaterial,
-                icon: const Icon(Icons.add),
-                label: const Text('Aggiungi Materiale'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+          if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign_materials.create_all'))
+            if (onAddMaterial != null)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onAddMaterial,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Aggiungi Materiale'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
                 ),
               ),
-            ),
           
           // Link "Vedi tutti"
           Center(

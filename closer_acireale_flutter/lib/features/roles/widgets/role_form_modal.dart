@@ -46,7 +46,7 @@ class _RoleFormModalState extends State<RoleFormModal> {
       _levelController.text = widget.role!.level.toString();
       _selectedColor = _getColorFromString(widget.role!.color);
       _selectedPermissions.addAll(
-        widget.role!.permissions.map((p) => p.name).toList(),
+        widget.role!.permissions.map((p) => p.id.toString()).toList(),
       );
     } else {
       _levelController.text = '1';
@@ -269,16 +269,16 @@ class _RoleFormModalState extends State<RoleFormModal> {
                               itemCount: _availablePermissions.length,
                               itemBuilder: (context, index) {
                                 final permission = _availablePermissions[index];
-                                final isSelected = _selectedPermissions.contains(permission.name);
+                                final isSelected = _selectedPermissions.contains(permission.id.toString());
 
                                 return CheckboxListTile(
                                   value: isSelected,
                                   onChanged: (value) {
                                     setState(() {
                                       if (value == true) {
-                                        _selectedPermissions.add(permission.name);
+                                        _selectedPermissions.add(permission.id.toString());
                                       } else {
-                                        _selectedPermissions.remove(permission.name);
+                                        _selectedPermissions.remove(permission.id.toString());
                                       }
                                     });
                                   },

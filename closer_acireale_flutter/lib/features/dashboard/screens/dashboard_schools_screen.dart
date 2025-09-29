@@ -128,15 +128,16 @@ class _DashboardSchoolsScreenState extends State<DashboardSchoolsScreen> {
               ],
             ),
           ),
-          ElevatedButton.icon(
-            onPressed: _showAddSchoolModal,
-            icon: const Icon(Icons.add),
-            label: const Text('Aggiungi Scuola'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppTheme.primaryBlue,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            ),
+          if (Provider.of<AuthProvider>(context,listen: false).checkPermissionFromUser('schools.create'))
+            ElevatedButton.icon(
+              onPressed: _showAddSchoolModal,
+              icon: const Icon(Icons.add),
+              label: const Text('Aggiungi Scuola'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppTheme.primaryBlue,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              ),
           ),
         ],
       ),

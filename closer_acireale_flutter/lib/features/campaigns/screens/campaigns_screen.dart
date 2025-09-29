@@ -144,18 +144,19 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _showCreateCampaignModal,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Aggiungi Campagna'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryBlue,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20, 
-                            vertical: 12
+                      if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign.add'))
+                        ElevatedButton.icon(
+                          onPressed: _showCreateCampaignModal,
+                          icon: const Icon(Icons.add),
+                          label: const Text('Aggiungi Campagna'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryBlue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12
+                            ),
                           ),
-                        ),
                       ),
                     ],
                   ),

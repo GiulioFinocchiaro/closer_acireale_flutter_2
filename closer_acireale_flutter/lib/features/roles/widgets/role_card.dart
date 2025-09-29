@@ -1,5 +1,7 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/models/role_model.dart';
 import '../../../core/theme/app_theme.dart';
@@ -183,26 +185,28 @@ class RoleCard extends StatelessWidget {
             // Bottoni azioni
             Row(
               children: [
-                Expanded(
-                  child: CustomButton(
-                    text: 'Modifica',
-                    icon: Icons.edit,
-                    onPressed: onEdit,
-                    height: 32.h,
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('roles.update'))
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Modifica',
+                      icon: Icons.edit,
+                      onPressed: onEdit,
+                      height: 32.h,
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    ),
                   ),
-                ),
                 SizedBox(width: 8.w),
-                Expanded(
-                  child: CustomButton(
-                    text: 'Elimina',
-                    icon: Icons.delete,
-                    onPressed: onDelete,
-                    backgroundColor: Colors.red,
-                    height: 32.h,
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('roles.delete'))
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Elimina',
+                      icon: Icons.delete,
+                      onPressed: onDelete,
+                      backgroundColor: Colors.red,
+                      height: 32.h,
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    ),
                   ),
-                ),
               ],
             ),
           ],

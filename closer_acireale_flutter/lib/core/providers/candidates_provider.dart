@@ -115,13 +115,13 @@ class CandidatesProvider extends ChangeNotifier {
   }) async {
     try {
       await _apiService.post(
-        '/candidates/addCandidate',
+        '/candidates/add',
         {
           'user_id': userId,
           'class_year': classYear,
           'description': description,
           'photo': photo,
-          'manifesto': manifesto,
+          'school_id': _selectedSchoolId
         },
         token: _token,
       );
@@ -145,7 +145,7 @@ class CandidatesProvider extends ChangeNotifier {
   }) async {
     try {
       await _apiService.put(
-        '/candidates/updateCandidate',
+        '/candidates/update',
         {
           'id': id,
           'class_year': classYear,
@@ -169,7 +169,7 @@ class CandidatesProvider extends ChangeNotifier {
   Future<bool> deleteCandidate(int id) async {
     try {
       await _apiService.delete(
-        '/candidates/deleteCandidate',
+        '/candidates/delete',
         data: {'id': id},
         token: _token,
       );

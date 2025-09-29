@@ -1,6 +1,8 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/models/graphic_asset_model.dart';
 import '../../../core/theme/app_theme.dart';
@@ -176,30 +178,32 @@ class GraphicCard extends StatelessWidget {
               // Bottoni azioni
               Row(
                 children: [
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Modifica',
-                      icon: Icons.edit,
-                      onPressed: () {
-                        onEdit();
-                      },
-                      height: 32.h,
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('media.update_all'))
+                    Expanded(
+                      child: CustomButton(
+                        text: 'Modifica',
+                        icon: Icons.edit,
+                        onPressed: () {
+                          onEdit();
+                        },
+                        height: 32.h,
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Elimina',
-                      icon: Icons.delete,
-                      onPressed: () {
-                        onDelete();
-                      },
-                      backgroundColor: Colors.red,
-                      height: 32.h,
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('media.delete_all'))
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: CustomButton(
+                        text: 'Elimina',
+                        icon: Icons.delete,
+                        onPressed: () {
+                          onDelete();
+                        },
+                        backgroundColor: Colors.red,
+                        height: 32.h,
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],
@@ -212,15 +216,13 @@ class GraphicCard extends StatelessWidget {
   Widget _buildImage(GraphicAsset graphic) {
     // Per il web, utilizziamo un approccio diverso per garantire la compatibilità
     if (kIsWeb) {
+      // Per web: utilizziamo Image.network senza headers personalizzati che causano CORS
       return Image.network(
         graphic.fullUrl,
         fit: BoxFit.cover,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        },
         errorBuilder: (context, error, stackTrace) {
+          print('Errore caricamento immagine web: $error');
+          print('URL: ${graphic.fullUrl}');
           return _buildErrorWidget('Errore caricamento web');
         },
         loadingBuilder: (context, child, loadingProgress) {
@@ -234,6 +236,8 @@ class GraphicCard extends StatelessWidget {
         graphic.fullUrl,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
+          print('Errore caricamento immagine: $error');
+          print('URL: ${graphic.fullUrl}');
           return _buildErrorWidget('Errore caricamento');
         },
         loadingBuilder: (context, child, loadingProgress) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/models/candidate_model.dart';
 import '../../../core/models/user_model.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
 import '../../../core/providers/candidates_provider.dart';
@@ -49,14 +50,15 @@ class CandidatesSection extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () => _showAddCandidateModal(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Aggiungi Candidato'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign_candidates.add'))
+                ElevatedButton.icon(
+                  onPressed: () => _showAddCandidateModal(context),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Aggiungi Candidato'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
                 ),
-              ),
             ],
           ),
           

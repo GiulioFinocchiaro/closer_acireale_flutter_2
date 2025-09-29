@@ -331,12 +331,13 @@ class AllEventsModal extends StatelessWidget {
                                     color: AppTheme.successGreen,
                                     tooltip: 'Apri Link',
                                   ),
-                                IconButton(
-                                  onPressed: () => _showDeleteConfirmation(context, event),
-                                  icon: const Icon(Icons.delete_outline),
-                                  color: AppTheme.errorRed,
-                                  tooltip: 'Elimina',
-                                ),
+                                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign_events.delete_all'))
+                                  IconButton(
+                                    onPressed: () => _showDeleteConfirmation(context, event),
+                                    icon: const Icon(Icons.delete_outline),
+                                    color: AppTheme.errorRed,
+                                    tooltip: 'Elimina',
+                                  ),
                               ],
                             ),
                           ],

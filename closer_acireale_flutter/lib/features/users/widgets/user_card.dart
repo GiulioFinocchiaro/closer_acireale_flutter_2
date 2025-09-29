@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import '../../../core/models/user_model.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
 
 class UserCard extends StatelessWidget {
@@ -135,29 +137,31 @@ class UserCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  onPressed: onEdit,
-                  icon: Icon(Icons.edit, size: 18.w),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppTheme.primaryBlue.withOpacity(0.1),
-                    foregroundColor: AppTheme.primaryBlue,
-                    padding: EdgeInsets.all(8.w),
-                    minimumSize: Size(32.w, 32.h),
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.edit_all'))
+                  IconButton(
+                    onPressed: onEdit,
+                    icon: Icon(Icons.edit, size: 18.w),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.primaryBlue.withOpacity(0.1),
+                      foregroundColor: AppTheme.primaryBlue,
+                      padding: EdgeInsets.all(8.w),
+                      minimumSize: Size(32.w, 32.h),
+                    ),
+                    tooltip: 'Modifica utente',
                   ),
-                  tooltip: 'Modifica utente',
-                ),
                 SizedBox(width: 8.w),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: Icon(Icons.delete, size: 18.w),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppTheme.errorRed.withOpacity(0.1),
-                    foregroundColor: AppTheme.errorRed,
-                    padding: EdgeInsets.all(8.w),
-                    minimumSize: Size(32.w, 32.h),
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.delete_all'))
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: Icon(Icons.delete, size: 18.w),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.errorRed.withOpacity(0.1),
+                      foregroundColor: AppTheme.errorRed,
+                      padding: EdgeInsets.all(8.w),
+                      minimumSize: Size(32.w, 32.h),
+                    ),
+                    tooltip: 'Elimina utente',
                   ),
-                  tooltip: 'Elimina utente',
-                ),
               ],
             ),
           ],

@@ -7,9 +7,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/models/candidate_model.dart';
+import '../../../core/models/graphic_asset_model.dart';
 import '../../../core/providers/candidates_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import 'candidate_asset_selector.dart';
 
 class CandidateFormModal extends StatefulWidget {
   final String title;
@@ -34,6 +36,7 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
   int? _selectedUserId;
   Uint8List? _selectedImageBytes;
   String? _selectedImageName;
+  GraphicAsset? _selectedAsset;
 
   @override
   void initState() {
@@ -73,9 +76,10 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
     // Per le modifiche, usiamo un ID fittizio (-1) dato che l'API probabilmente usa l'ID del candidato
     final userId = _selectedUserId ?? -1;
 
-    // Convertiamo l'immagine in base64 se selezionata
+    // Convertiamo l'immagine in base64 se selezionata o usiamo l'URL dell'asset
     String? photoBase64;
     if (_selectedImageBytes != null && _selectedImageName != null) {
+      // Uso immagine caricata manualmente
       final base64String = base64Encode(_selectedImageBytes!);
       // Determiniamo il MIME type dall'estensione del file
       String mimeType = 'image/jpeg'; // default
@@ -94,6 +98,9 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
           mimeType = 'image/jpeg';
       }
       photoBase64 = 'data:$mimeType;base64,$base64String';
+    } else if (_selectedAsset != null) {
+      // Uso grafica selezionata - inviamo l'URL completo
+      photoBase64 = _selectedAsset!.fullUrl;
     }
 
     widget.onSave(
@@ -118,6 +125,7 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
         setState(() {
           _selectedImageBytes = file.bytes!;
           _selectedImageName = file.name;
+          _selectedAsset = null; // Reset selected asset if user picks new file
         });
       }
     } catch (e) {
@@ -129,6 +137,174 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
           content: Text('Errore nella selezione dell\'immagine: $e'),
           backgroundColor: Colors.red,
         ),
+      );
+    }
+  }
+
+  Future<void> _selectFromGraphics() async {
+    try {
+      final GraphicAsset? selectedAsset = await showDialog<GraphicAsset>(
+        context: context,
+        builder: (context) => const CandidateAssetSelector(),
+      );
+
+      if (selectedAsset != null) {
+        setState(() {
+          _selectedAsset = selectedAsset;
+          _selectedImageBytes = null; // Reset manual upload if asset selected
+          _selectedImageName = null;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Errore selezione asset: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Errore nella selezione della grafica: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _clearSelection() {
+    setState(() {
+      _selectedAsset = null;
+      _selectedImageBytes = null;
+      _selectedImageName = null;
+    });
+  }
+
+  Widget _buildImagePreview() {
+    if (_selectedImageBytes != null) {
+      // Mostra l'immagine caricata manualmente
+      return Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: Image.memory(
+              _selectedImageBytes!,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          Positioned(
+            top: 8.h,
+            right: 8.w,
+            child: GestureDetector(
+              onTap: _clearSelection,
+              child: Container(
+                padding: EdgeInsets.all(4.w),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16.w,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else if (_selectedAsset != null) {
+      // Mostra la grafica selezionata
+      return Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: Image.network(
+              _selectedAsset!.fullUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              errorBuilder: (context, error, stackTrace) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.broken_image,
+                        size: 32.w,
+                        color: AppTheme.textMedium,
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Errore caricamento',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: AppTheme.textMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned(
+            top: 8.h,
+            right: 8.w,
+            child: GestureDetector(
+              onTap: _clearSelection,
+              child: Container(
+                padding: EdgeInsets.all(4.w),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16.w,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      // Mostra il placeholder
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.add_photo_alternate_outlined,
+            size: 48.w,
+            color: AppTheme.textMedium,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'Seleziona una foto',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppTheme.textMedium,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'Dalle grafiche o carica un file',
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: AppTheme.textLight,
+            ),
+          ),
+        ],
       );
     }
   }
@@ -281,7 +457,7 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
 
                       SizedBox(height: 16.h),
 
-                      // Selezione Immagine
+                      // Selezione Immagine con più opzioni
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -294,97 +470,98 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
                             ),
                           ),
                           SizedBox(height: 8.h),
-                          GestureDetector(
-                            onTap: _pickImage,
-                            child: Container(
-                              width: double.infinity,
-                              height: 120.h,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppTheme.borderLight,
-                                  style: BorderStyle.solid,
-                                  width: 2.w,
+
+                          // Bottoni per scegliere il metodo di selezione
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _selectFromGraphics,
+                                  icon: Icon(Icons.photo_library, size: 16.w),
+                                  label: Text(
+                                    'Dalle Grafiche',
+                                    style: TextStyle(fontSize: 12.sp),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppTheme.primaryBlue,
+                                    side: BorderSide(color: AppTheme.primaryBlue),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: Colors.grey[50],
                               ),
-                              child: _selectedImageBytes != null
-                                  ? Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    child: Image.memory(
-                                      _selectedImageBytes!,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    ),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _pickImage,
+                                  icon: Icon(Icons.upload_file, size: 16.w),
+                                  label: Text(
+                                    'Carica File',
+                                    style: TextStyle(fontSize: 12.sp),
                                   ),
-                                  Positioned(
-                                    top: 8.h,
-                                    right: 8.w,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedImageBytes = null;
-                                          _selectedImageName = null;
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(4.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.7),
-                                          borderRadius: BorderRadius.circular(20.r),
-                                        ),
-                                        child: Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                          size: 16.w,
-                                        ),
-                                      ),
-                                    ),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppTheme.primaryBlue,
+                                    side: BorderSide(color: AppTheme.primaryBlue),
                                   ),
-                                ],
-                              )
-                                  : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add_photo_alternate_outlined,
-                                    size: 48.w,
-                                    color: AppTheme.textMedium,
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    'Clicca per selezionare una foto',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: AppTheme.textMedium,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    'JPG, PNG, GIF, WEBP',
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 12.h),
+
+                          // Area di anteprima
+                          Container(
+                            width: double.infinity,
+                            height: 120.h,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: AppTheme.borderLight,
+                                style: BorderStyle.solid,
+                                width: 2.w,
+                              ),
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: Colors.grey[50],
+                            ),
+                            child: _buildImagePreview(),
+                          ),
+
+                          // Info sul file selezionato
+                          if (_selectedImageName != null) ...[
+                            SizedBox(height: 8.h),
+                            Row(
+                              children: [
+                                Icon(Icons.file_present, size: 16.w, color: AppTheme.primaryBlue),
+                                SizedBox(width: 4.w),
+                                Expanded(
+                                  child: Text(
+                                    'File caricato: $_selectedImageName',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: AppTheme.textLight,
+                                      color: AppTheme.primaryBlue,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (_selectedImageName != null)
-                            Padding(
-                              padding: EdgeInsets.only(top: 8.h),
-                              child: Text(
-                                'File selezionato: $_selectedImageName',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppTheme.primaryBlue,
                                 ),
-                              ),
+                              ],
                             ),
+                          ],
+
+                          if (_selectedAsset != null) ...[
+                            SizedBox(height: 8.h),
+                            Row(
+                              children: [
+                                Icon(Icons.photo_library, size: 16.w, color: AppTheme.primaryBlue),
+                                SizedBox(width: 4.w),
+                                Expanded(
+                                  child: Text(
+                                    'Grafica selezionata: ${_selectedAsset!.description.isNotEmpty ? _selectedAsset!.description : _selectedAsset!.fileName}',
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppTheme.primaryBlue,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ],

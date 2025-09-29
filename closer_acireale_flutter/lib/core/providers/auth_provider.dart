@@ -127,6 +127,17 @@ class AuthProvider extends ChangeNotifier {
     _hasSchoolPermissions = false;
   }
 
+  bool checkPermissionFromUser(String permission){
+    for (var role in this._currentUser!.roles){
+      for (var perm in role.permissions){
+        if (perm.name == permission) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // Salva token in storage locale
   Future<void> _saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();

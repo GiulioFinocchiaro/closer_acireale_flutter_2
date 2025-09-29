@@ -1,3 +1,4 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -179,11 +180,12 @@ class _RolesScreenState extends State<RolesScreen> {
                             color: AppTheme.textDark,
                           ),
                         ),
-                        CustomButton(
-                          text: 'Aggiungi Ruolo',
-                          icon: Icons.add,
-                          onPressed: _showAddRoleModal,
-                        ),
+                        if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('roles.create'))
+                          CustomButton(
+                            text: 'Aggiungi Ruolo',
+                            icon: Icons.add,
+                            onPressed: _showAddRoleModal,
+                          ),
                       ],
                     ),
                     Container(

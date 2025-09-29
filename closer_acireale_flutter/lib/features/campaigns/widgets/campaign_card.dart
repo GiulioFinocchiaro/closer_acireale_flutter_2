@@ -1,5 +1,8 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
+import 'package:closer_acireale_flutter/core/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
 
@@ -138,26 +141,28 @@ class CampaignCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if (onEdit != null) ...[
-                      IconButton(
-                        onPressed: () {
-                          onEdit!();
-                        },
-                        icon: const Icon(Icons.edit),
-                        color: AppTheme.primaryBlue,
-                        tooltip: 'Modifica',
-                      ),
-                    ],
-                    if (onDelete != null) ...[
-                      IconButton(
-                        onPressed: () {
-                          onDelete!();
-                        },
-                        icon: const Icon(Icons.delete),
-                        color: AppTheme.errorRed,
-                        tooltip: 'Elimina',
-                      ),
-                    ],
+                    if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign.update_all_school'))
+                      if (onEdit != null) ...[
+                        IconButton(
+                          onPressed: () {
+                            onEdit!();
+                          },
+                          icon: const Icon(Icons.edit),
+                          color: AppTheme.primaryBlue,
+                          tooltip: 'Modifica',
+                        ),
+                      ],
+                    if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign.delete_all_school'))
+                      if (onDelete != null) ...[
+                        IconButton(
+                          onPressed: () {
+                            onDelete!();
+                          },
+                          icon: const Icon(Icons.delete),
+                          color: AppTheme.errorRed,
+                          tooltip: 'Elimina',
+                        ),
+                      ],
                   ],
                 ),
               ],

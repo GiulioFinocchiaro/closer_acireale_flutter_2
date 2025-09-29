@@ -142,14 +142,16 @@ class SchoolsOverview extends StatelessWidget {
             ),
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.edit, color: AppTheme.primaryBlue),
-                  onPressed: () => _showEditSchool(context, school),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: AppTheme.errorRed),
-                  onPressed: () => _showDeleteSchoolModal(context, school),
-                ),
+                if (Provider.of<AuthProvider>(context,listen: false).checkPermissionFromUser('schools.update'))
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: AppTheme.primaryBlue),
+                    onPressed: () => _showEditSchool(context, school),
+                  ),
+                if (Provider.of<AuthProvider>(context,listen: false).checkPermissionFromUser('schools.delete'))
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: AppTheme.errorRed),
+                    onPressed: () => _showDeleteSchoolModal(context, school),
+                  ),
               ],
             ),
           ],

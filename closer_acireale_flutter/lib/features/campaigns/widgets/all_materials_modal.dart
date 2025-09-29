@@ -319,12 +319,13 @@ class AllMaterialsModal extends StatelessWidget {
                                     color: AppTheme.successGreen,
                                     tooltip: 'Visualizza',
                                   ),
-                                IconButton(
-                                  onPressed: () => _showDeleteConfirmation(context, material),
-                                  icon: const Icon(Icons.delete_outline),
-                                  color: AppTheme.errorRed,
-                                  tooltip: 'Elimina',
-                                ),
+                                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign_materials.delete_all'))
+                                  IconButton(
+                                    onPressed: () => _showDeleteConfirmation(context, material),
+                                    icon: const Icon(Icons.delete_outline),
+                                    color: AppTheme.errorRed,
+                                    tooltip: 'Elimina',
+                                  ),
                               ],
                             ),
                           ],
