@@ -386,23 +386,24 @@ class _UsersScreenState extends State<UsersScreen> {
             const SizedBox(height: 12),
 
             // ✅ Checkbox Reimposta Password con StatefulBuilder
-            StatefulBuilder(
-              builder: (context, setStateSB) {
-                return CheckboxListTile(
-                  title: const Text('Reimposta password'),
-                  value: resetPassword,
-                  onChanged: (bool? value) {
-                    setStateSB(() {
-                      resetPassword = value ?? false;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                  activeColor: AppTheme.errorRed,
-                );
-              },
-            ),
+            if (user != null)
+              StatefulBuilder(
+                builder: (context, setStateSB) {
+                  return CheckboxListTile(
+                    title: const Text('Reimposta password'),
+                    value: resetPassword,
+                    onChanged: (bool? value) {
+                      setStateSB(() {
+                        resetPassword = value ?? false;
+                      });
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    activeColor: AppTheme.errorRed,
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
-            const SizedBox(height: 12),
             Text(
               'Ruoli',
               style: TextStyle(
