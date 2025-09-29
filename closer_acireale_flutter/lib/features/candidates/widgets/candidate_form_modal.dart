@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'dart:typed_data';
+import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../core/models/candidate_model.dart';
 import '../../../core/providers/candidates_provider.dart';
@@ -26,10 +30,10 @@ class CandidateFormModal extends StatefulWidget {
 class _CandidateFormModalState extends State<CandidateFormModal> {
   final _classYearController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _photoController = TextEditingController();
-  final _manifestoController = TextEditingController();
-  
+
   int? _selectedUserId;
+  Uint8List? _selectedImageBytes;
+  String? _selectedImageName;
 
   @override
   void initState() {
@@ -41,8 +45,7 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
     if (widget.candidate != null) {
       _classYearController.text = widget.candidate!.classYear ?? '';
       _descriptionController.text = widget.candidate!.description ?? '';
-      _photoController.text = widget.candidate!.photo ?? '';
-      _manifestoController.text = widget.candidate!.manifesto ?? '';
+      // Per le modifiche, non inizializziamo l'immagine poiché useremo solo il selettore
     }
   }
 
@@ -70,21 +73,70 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
     // Per le modifiche, usiamo un ID fittizio (-1) dato che l'API probabilmente usa l'ID del candidato
     final userId = _selectedUserId ?? -1;
 
+    // Convertiamo l'immagine in base64 se selezionata
+    String? photoBase64;
+    if (_selectedImageBytes != null && _selectedImageName != null) {
+      final base64String = base64Encode(_selectedImageBytes!);
+      // Determiniamo il MIME type dall'estensione del file
+      String mimeType = 'image/jpeg'; // default
+      final extension = _selectedImageName!.split('.').last.toLowerCase();
+      switch (extension) {
+        case 'png':
+          mimeType = 'image/png';
+          break;
+        case 'gif':
+          mimeType = 'image/gif';
+          break;
+        case 'webp':
+          mimeType = 'image/webp';
+          break;
+        default:
+          mimeType = 'image/jpeg';
+      }
+      photoBase64 = 'data:$mimeType;base64,$base64String';
+    }
+
     widget.onSave(
       userId,
       _classYearController.text,
       _descriptionController.text,
-      _photoController.text.isNotEmpty ? _photoController.text : null,
-      _manifestoController.text.isNotEmpty ? _manifestoController.text : null,
+      photoBase64,
+      null, // Non usiamo più il manifesto
     );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        withData: true,
+      );
+
+      if (result != null && result.files.single.bytes != null) {
+        final file = result.files.first;
+        setState(() {
+          _selectedImageBytes = file.bytes!;
+          _selectedImageName = file.name;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Errore selezione immagine: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Errore nella selezione dell\'immagine: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
     _classYearController.dispose();
     _descriptionController.dispose();
-    _photoController.dispose();
-    _manifestoController.dispose();
     super.dispose();
   }
 
@@ -128,9 +180,9 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -209,16 +261,16 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
                         ),
                         SizedBox(height: 16.h),
                       ],
-                      
+
                       // Anno classe
                       CustomTextField(
                         label: 'Anno Classe',
                         controller: _classYearController,
                         hint: 'Es: 3A, 4B',
                       ),
-                      
+
                       SizedBox(height: 16.h),
-                      
+
                       // Descrizione
                       CustomTextField(
                         label: 'Descrizione',
@@ -226,31 +278,122 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
                         hint: 'Breve descrizione del candidato',
                         maxLines: 4,
                       ),
-                      
+
                       SizedBox(height: 16.h),
-                      
-                      // URL Foto
-                      CustomTextField(
-                        label: 'URL Foto (Opzionale)',
-                        controller: _photoController,
-                        hint: 'URL della foto del candidato',
-                      ),
-                      
-                      SizedBox(height: 16.h),
-                      
-                      // URL Manifesto
-                      CustomTextField(
-                        label: 'URL Manifesto (Opzionale)',
-                        controller: _manifestoController,
-                        hint: 'URL del manifesto elettorale',
+
+                      // Selezione Immagine
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Foto Candidato (Opzionale)',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          GestureDetector(
+                            onTap: _pickImage,
+                            child: Container(
+                              width: double.infinity,
+                              height: 120.h,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppTheme.borderLight,
+                                  style: BorderStyle.solid,
+                                  width: 2.w,
+                                ),
+                                borderRadius: BorderRadius.circular(8.r),
+                                color: Colors.grey[50],
+                              ),
+                              child: _selectedImageBytes != null
+                                  ? Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    child: Image.memory(
+                                      _selectedImageBytes!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8.h,
+                                    right: 8.w,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedImageBytes = null;
+                                          _selectedImageName = null;
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(4.w),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.7),
+                                          borderRadius: BorderRadius.circular(20.r),
+                                        ),
+                                        child: Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                          size: 16.w,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                                  : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_photo_alternate_outlined,
+                                    size: 48.w,
+                                    color: AppTheme.textMedium,
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Clicca per selezionare una foto',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: AppTheme.textMedium,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    'JPG, PNG, GIF, WEBP',
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppTheme.textLight,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (_selectedImageName != null)
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.h),
+                              child: Text(
+                                'File selezionato: $_selectedImageName',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: AppTheme.primaryBlue,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Bottoni
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -262,9 +405,9 @@ class _CandidateFormModalState extends State<CandidateFormModal> {
                   SizedBox(width: 8.w),
                   Consumer<CandidatesProvider>(
                     builder: (context, provider, child) {
-                      final canSave = widget.candidate != null || 
+                      final canSave = widget.candidate != null ||
                           (provider.eligibleUsers.isNotEmpty && !provider.isLoadingUsers);
-                      
+
                       return ElevatedButton(
                         onPressed: canSave ? _handleSubmit : null,
                         child: Text(

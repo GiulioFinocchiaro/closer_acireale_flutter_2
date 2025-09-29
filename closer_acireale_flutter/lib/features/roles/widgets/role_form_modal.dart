@@ -27,7 +27,7 @@ class RoleFormModal extends StatefulWidget {
 class _RoleFormModalState extends State<RoleFormModal> {
   final _nameController = TextEditingController();
   final _levelController = TextEditingController();
-  
+
   Color _selectedColor = Colors.black;
   final List<String> _selectedPermissions = [];
   List<PermissionModel> _availablePermissions = [];
@@ -61,7 +61,7 @@ class _RoleFormModalState extends State<RoleFormModal> {
     try {
       final provider = Provider.of<RoleProvider>(context, listen: false);
       await provider.getAvailablePermissions();
-      
+
       setState(() {
         _availablePermissions = provider.availablePermissions;
         _isLoadingPermissions = false;
@@ -160,9 +160,9 @@ class _RoleFormModalState extends State<RoleFormModal> {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -188,9 +188,9 @@ class _RoleFormModalState extends State<RoleFormModal> {
                           ),
                         ],
                       ),
-                      
+
                       SizedBox(height: 16.h),
-                      
+
                       // Colore ruolo
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,9 +230,9 @@ class _RoleFormModalState extends State<RoleFormModal> {
                           ),
                         ],
                       ),
-                      
+
                       SizedBox(height: 16.h),
-                      
+
                       // Permessi
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,44 +256,44 @@ class _RoleFormModalState extends State<RoleFormModal> {
                             ),
                             child: _isLoadingPermissions
                                 ? const Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                        SizedBox(height: 8),
-                                        Text('Caricamento permessi...'),
-                                      ],
-                                    ),
-                                  )
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 8),
+                                  Text('Caricamento permessi...'),
+                                ],
+                              ),
+                            )
                                 : ListView.builder(
-                                    itemCount: _availablePermissions.length,
-                                    itemBuilder: (context, index) {
-                                      final permission = _availablePermissions[index];
-                                      final isSelected = _selectedPermissions.contains(permission);
-                                      
-                                      return CheckboxListTile(
-                                        value: isSelected,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            if (value == true) {
-                                              _selectedPermissions.add(permission.display_name);
-                                            } else {
-                                              _selectedPermissions.remove(permission.display_name);
-                                            }
-                                          });
-                                        },
-                                        title: Text(
-                                          permission.display_name,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: AppTheme.textDark,
-                                          ),
-                                        ),
-                                        dense: true,
-                                        controlAffinity: ListTileControlAffinity.leading,
-                                      );
-                                    },
+                              itemCount: _availablePermissions.length,
+                              itemBuilder: (context, index) {
+                                final permission = _availablePermissions[index];
+                                final isSelected = _selectedPermissions.contains(permission.name);
+
+                                return CheckboxListTile(
+                                  value: isSelected,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        _selectedPermissions.add(permission.name);
+                                      } else {
+                                        _selectedPermissions.remove(permission.name);
+                                      }
+                                    });
+                                  },
+                                  title: Text(
+                                    permission.display_name,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppTheme.textDark,
+                                    ),
                                   ),
+                                  dense: true,
+                                  controlAffinity: ListTileControlAffinity.leading,
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -301,9 +301,9 @@ class _RoleFormModalState extends State<RoleFormModal> {
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Bottoni
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

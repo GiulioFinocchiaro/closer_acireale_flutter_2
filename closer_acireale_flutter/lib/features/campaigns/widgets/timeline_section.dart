@@ -228,10 +228,6 @@ class TimelineSection extends StatelessWidget {
   }
 
   Future<void> _showItemDetails(BuildContext context, TimelineItem item) async {
-    WidgetsFlutterBinding.ensureInitialized();
-
-    // Inizializza i dati locali per la lingua desiderata
-    await initializeDateFormatting('it_IT', null);
     showDialog(
       context: context,
       builder: (context) => Dialog(

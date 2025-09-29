@@ -1,0 +1,1 @@
+ /home/giulio-finocchiaro/Documenti/closer_acireale_flutter_2/closer_acireale_flutter/.dart_tool/flutter_build/ebe05989c81d796e991a46dc8fd07796/native_assets.json: 

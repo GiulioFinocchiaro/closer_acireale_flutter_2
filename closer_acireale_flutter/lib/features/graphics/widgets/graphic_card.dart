@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../core/models/graphic_asset_model.dart';
 import '../../../core/theme/app_theme.dart';
@@ -73,9 +74,9 @@ class GraphicCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 12.h),
-              
+
               // Immagine preview
               Expanded(
                 child: Container(
@@ -88,70 +89,34 @@ class GraphicCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.r),
                     child: graphic.isImage
-                        ? Image.network(
-                            graphic.fullUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.broken_image,
-                                      size: 32.w,
-                                      color: AppTheme.textMedium,
-                                    ),
-                                    SizedBox(height: 4.h),
-                                    Text(
-                                      'Errore caricamento',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: AppTheme.textMedium,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              );
-                            },
-                          )
+                        ? _buildImage(graphic)
                         : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  _getFileIcon(graphic.asset_type),
-                                  size: 48.w,
-                                  color: AppTheme.textMedium,
-                                ),
-                                SizedBox(height: 8.h),
-                                Text(
-                                  graphic.asset_type.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.textMedium,
-                                  ),
-                                ),
-                              ],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            _getFileIcon(graphic.asset_type),
+                            size: 48.w,
+                            color: AppTheme.textMedium,
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            graphic.asset_type.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textMedium,
                             ),
                           ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 12.h),
-              
+
               // Metadati
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,9 +170,9 @@ class GraphicCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 12.h),
-              
+
               // Bottoni azioni
               Row(
                 children: [
@@ -240,6 +205,75 @@ class GraphicCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildImage(GraphicAsset graphic) {
+    // Per il web, utilizziamo un approccio diverso per garantire la compatibilità
+    if (kIsWeb) {
+      return Image.network(
+        graphic.fullUrl,
+        fit: BoxFit.cover,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildErrorWidget('Errore caricamento web');
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return _buildLoadingWidget(loadingProgress);
+        },
+      );
+    } else {
+      // Per desktop e mobile
+      return Image.network(
+        graphic.fullUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildErrorWidget('Errore caricamento');
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return _buildLoadingWidget(loadingProgress);
+        },
+      );
+    }
+  }
+
+  Widget _buildErrorWidget(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.broken_image,
+            size: 32.w,
+            color: AppTheme.textMedium,
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: AppTheme.textMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingWidget(ImageChunkEvent loadingProgress) {
+    return Center(
+      child: CircularProgressIndicator(
+        value: loadingProgress.expectedTotalBytes != null
+            ? loadingProgress.cumulativeBytesLoaded /
+            loadingProgress.expectedTotalBytes!
+            : null,
       ),
     );
   }
