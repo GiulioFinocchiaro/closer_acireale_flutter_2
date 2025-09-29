@@ -101,29 +101,28 @@ class MaterialSection extends StatelessWidget {
             ),
           
           // Link "Vedi tutti"
-          if (materials.length > 3)
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  if (campaignId != null) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AllMaterialsModal(
-                        materials: materials,
-                        campaignId: campaignId!,
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  'Vedi tutti i ${materials.length} materiali',
-                  style: const TextStyle(
-                    color: AppTheme.primaryBlue,
-                    fontWeight: FontWeight.bold,
-                  ),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                if (campaignId != null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AllMaterialsModal(
+                      materials: materials,
+                      campaignId: campaignId!,
+                    ),
+                  );
+                }
+              },
+              child: Text(
+                'Vedi tutti i ${materials.length} materiali',
+                style: const TextStyle(
+                  color: AppTheme.primaryBlue,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

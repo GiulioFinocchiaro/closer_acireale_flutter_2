@@ -82,29 +82,28 @@ class EventSection extends StatelessWidget {
             ),
           
           // Link "Vedi tutti"
-          if (events.length > 3)
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  if (campaignId != null) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AllEventsModal(
-                        events: events,
-                        campaignId: campaignId!,
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  'Vedi tutti i ${events.length} eventi',
-                  style: const TextStyle(
-                    color: AppTheme.primaryBlue,
-                    fontWeight: FontWeight.bold,
-                  ),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                if (campaignId != null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AllEventsModal(
+                      events: events,
+                      campaignId: campaignId!,
+                    ),
+                  );
+                }
+              },
+              child: Text(
+                'Vedi tutti i ${events.length} eventi',
+                style: const TextStyle(
+                  color: AppTheme.primaryBlue,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

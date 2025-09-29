@@ -1,5 +1,6 @@
 import 'package:closer_acireale_flutter/core/models/material_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import '../../../core/models/event_model.dart';
 import '../../../core/theme/app_theme.dart';
@@ -226,7 +227,11 @@ class TimelineSection extends StatelessWidget {
     );
   }
 
-  void _showItemDetails(BuildContext context, TimelineItem item) {
+  Future<void> _showItemDetails(BuildContext context, TimelineItem item) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // Inizializza i dati locali per la lingua desiderata
+    await initializeDateFormatting('it_IT', null);
     showDialog(
       context: context,
       builder: (context) => Dialog(

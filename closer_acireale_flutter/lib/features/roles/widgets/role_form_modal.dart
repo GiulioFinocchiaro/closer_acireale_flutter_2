@@ -1,3 +1,4 @@
+import 'package:closer_acireale_flutter/core/models/permission_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class _RoleFormModalState extends State<RoleFormModal> {
   
   Color _selectedColor = Colors.black;
   final List<String> _selectedPermissions = [];
-  List<String> _availablePermissions = [];
+  List<PermissionModel> _availablePermissions = [];
   bool _isLoadingPermissions = false;
 
   @override
@@ -69,25 +70,6 @@ class _RoleFormModalState extends State<RoleFormModal> {
       setState(() {
         _isLoadingPermissions = false;
       });
-      // Fallback permissions list
-      _availablePermissions = [
-        'users.view_all',
-        'users.create',
-        'users.update_all',
-        'users.delete_all',
-        'roles.view_all',
-        'roles.create',
-        'roles.update',
-        'roles.delete',
-        'candidates.view_all',
-        'candidates.create',
-        'candidates.update_all',
-        'candidates.delete_all',
-        'media.view_all',
-        'media.upload',
-        'media.update_all',
-        'media.delete_all',
-      ];
     }
   }
 
@@ -294,14 +276,14 @@ class _RoleFormModalState extends State<RoleFormModal> {
                                         onChanged: (value) {
                                           setState(() {
                                             if (value == true) {
-                                              _selectedPermissions.add(permission);
+                                              _selectedPermissions.add(permission.display_name);
                                             } else {
-                                              _selectedPermissions.remove(permission);
+                                              _selectedPermissions.remove(permission.display_name);
                                             }
                                           });
                                         },
                                         title: Text(
-                                          permission,
+                                          permission.display_name,
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             color: AppTheme.textDark,

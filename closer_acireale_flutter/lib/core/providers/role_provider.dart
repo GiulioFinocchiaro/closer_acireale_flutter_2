@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:closer_acireale_flutter/core/models/permission_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,13 +14,13 @@ class RoleProvider extends ChangeNotifier {
   int? _selectedSchoolId;
 
   List<RoleModel> _roles = [];
-  List<String> _availablePermissions = [];
+  List<PermissionModel> _availablePermissions = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   // Getters
   List<RoleModel> get roles => _roles;
-  List<String> get availablePermissions => _availablePermissions;
+  List<PermissionModel> get availablePermissions => _availablePermissions;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -65,10 +66,26 @@ class RoleProvider extends ChangeNotifier {
   /// Recupera i permessi disponibili
   Future<void> getAvailablePermissions() async {
     try {
-      final permissionsData = await _apiService.get('/roles/mine_permissions', token: _token);
-      _availablePermissions = List<String>.from(permissionsData);
-    } catch (e) {
+      final permissionsData = await _apiService.get(
+        '/roles/mine_permissions',
+        token: _token,
+      );
+
+      if (permissionsData is List) {
+        _availablePermissions = permissionsData
+            .map((u) => PermissionModel.fromJson(u))
+            .toList();
+        _errorMessage = null; // resetto eventuali errori precedenti
+      } else {
+        _availablePermissions = [];
+        _errorMessage = 'Formato dei dati non valido.';
+      }
+
+      notifyListeners();
+    } catch (e, stacktrace) {
+      _availablePermissions = [];
       _errorMessage = 'Errore durante il caricamento dei permessi: $e';
+      debugPrint('Errore in getAvailablePermissions: $e\n$stacktrace');
       notifyListeners();
     }
   }
