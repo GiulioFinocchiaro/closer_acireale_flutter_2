@@ -55,7 +55,6 @@ class AppWrapper extends StatelessWidget {
             themeMode: ThemeMode.light,
             routerConfig: AppRouter.router,
             debugShowCheckedModeBanner: false,
-            // Builder per overlay globali
             builder: (context, child) {
               return Stack(
                 children: [
@@ -66,6 +65,19 @@ class AppWrapper extends StatelessWidget {
                   const GlobalLoadingModal(),
                   const GlobalErrorModal(),
                   const TokenExpiredModal(),
+                  
+                  // Modal per reset password (deve essere sempre visibile se necessario)
+                  PasswordResetModal(
+                    onResetComplete: () {
+                      // Dopo il reset, procedi alla navigazione normale
+                      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                      if (authProvider.hasSchoolPermissions) {
+                        AppRouter.router.go('/dashboard-schools');
+                      } else {
+                        AppRouter.router.go('/dashboard');
+                      }
+                    },
+                  ),
                 ],
               );
             },
