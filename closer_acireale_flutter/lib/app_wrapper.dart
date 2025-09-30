@@ -21,6 +21,7 @@ import 'core/theme/app_theme.dart';
 import 'shared/widgets/global_error_modal.dart';
 import 'shared/widgets/global_loading_modal.dart';
 import 'shared/widgets/token_expired_modal.dart';
+import 'shared/widgets/password_reset_modal.dart';
 
 class AppWrapper extends StatelessWidget {
   const AppWrapper({super.key});
