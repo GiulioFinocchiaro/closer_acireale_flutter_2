@@ -23,6 +23,7 @@ class AuthProvider extends ChangeNotifier {
   bool get hasSchoolPermissions => _hasSchoolPermissions;
   String? get errorMessage => _errorMessage;
   bool get showTokenExpiredModal => _showTokenExpiredModal;
+  bool get showPasswordResetModal => _showPasswordResetModal;
 
   // Initialize - controlla se l'utente è già autenticato
   Future<void> initialize() async {
