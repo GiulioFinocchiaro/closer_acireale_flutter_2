@@ -1,5 +1,7 @@
+import 'package:closer_acireale_flutter/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../../core/models/event_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/campaign_model.dart';
@@ -68,18 +70,19 @@ class EventSection extends StatelessWidget {
           const SizedBox(height: 24),
           
           // Bottone aggiungi
-          if (onAddEvent != null)
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onAddEvent,
-                icon: const Icon(Icons.add),
-                label: const Text('Aggiungi Evento'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+          if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('campaign_events.create_all'))
+            if (onAddEvent != null)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onAddEvent,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Aggiungi Evento'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
                 ),
               ),
-            ),
           
           // Link "Vedi tutti"
           Center(
