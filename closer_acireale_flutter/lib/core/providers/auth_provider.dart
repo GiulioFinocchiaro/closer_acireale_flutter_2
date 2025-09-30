@@ -13,6 +13,7 @@ class AuthProvider extends ChangeNotifier {
   bool _hasSchoolPermissions = false;
   String? _errorMessage;
   bool _showTokenExpiredModal = false;
+  bool _showPasswordResetModal = false;
 
   // Getters
   bool get isAuthenticated => _isAuthenticated;
