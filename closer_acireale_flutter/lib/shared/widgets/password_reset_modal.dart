@@ -23,7 +23,7 @@ class PasswordResetModal extends StatefulWidget {
 }
 
 class _PasswordResetModalState extends State<PasswordResetModal> {
-  final _formKey = GlobalKey<FormState>();
+  late final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _obscureNewPassword = true;

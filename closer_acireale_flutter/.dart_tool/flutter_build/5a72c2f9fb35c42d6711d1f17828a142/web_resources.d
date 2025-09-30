@@ -1,1 +1,0 @@
- /app/closer_acireale_flutter/build/web/manifest.json:  /app/closer_acireale_flutter/web/manifest.json /app/closer_acireale_flutter/web/index.html

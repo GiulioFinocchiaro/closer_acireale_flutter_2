@@ -107,7 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Benvenuto nella Dashboard della scuola: ${school!.school_name}',
+            'Benvenuto nella Dashboard della scuola: ${school!.list_name}',
             style: TextStyle(
               fontSize: ResponsiveUtils.getResponsiveFontSize(
                 context,
