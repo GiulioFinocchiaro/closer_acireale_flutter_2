@@ -33,6 +33,7 @@ class UserModel {
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])
           : null,
+      resetPassword: json['reset_password'],
     );
   }
 
