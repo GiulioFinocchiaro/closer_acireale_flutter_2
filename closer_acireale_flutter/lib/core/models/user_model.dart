@@ -6,6 +6,7 @@ class UserModel {
   final String email;
   final List<RoleModel> roles;
   final DateTime? createdAt;
+  final bool? resetPassword;
 
   UserModel({
     required this.id,
