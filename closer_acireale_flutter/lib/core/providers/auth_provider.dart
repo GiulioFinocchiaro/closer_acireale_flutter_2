@@ -64,6 +64,10 @@ class AuthProvider extends ChangeNotifier {
         _checkSchoolPermissionsFromUser();
         
         _isAuthenticated = true;
+        
+        // Controlla se è necessario il reset della password
+        checkPasswordReset();
+        
         _setLoading(false);
         notifyListeners();
         return true;
