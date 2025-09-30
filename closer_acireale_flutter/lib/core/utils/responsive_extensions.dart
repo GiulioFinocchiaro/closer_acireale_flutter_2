@@ -152,6 +152,7 @@ class ResponsiveLayout {
     EdgeInsets? padding,
     EdgeInsets? margin,
     Alignment alignment = Alignment.center,
+    double? maxWidth,
   }) {
     return Container(
       width: double.infinity,
@@ -160,7 +161,7 @@ class ResponsiveLayout {
       margin: margin,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: context.maxContainerWidth,
+          maxWidth: maxWidth ?? context.maxContainerWidth,
         ),
         child: child,
       ),
