@@ -186,4 +186,48 @@ class AuthProvider extends ChangeNotifier {
       _setError('Errore: $errorString');
     }
   }
+
+  // Password Reset Methods
+  Future<bool> resetPassword(String newPassword) async {
+    try {
+      _setLoading(true);
+      _clearError();
+
+      await _apiService.post('/auth/reset-password', {
+        'password': newPassword,
+      }, token: _token);
+
+      // Aggiorna l'utente corrente per rimuovere il flag reset_password
+      if (_currentUser != null) {
+        _currentUser = _currentUser!.copyWith(resetPassword: false);
+        _showPasswordResetModal = false;
+      }
+
+      _setLoading(false);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError('Errore durante il reset della password: ${e.toString()}');
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  // Gestione modal reset password
+  void showPasswordResetModal() {
+    _showPasswordResetModal = true;
+    notifyListeners();
+  }
+
+  void hidePasswordResetModal() {
+    _showPasswordResetModal = false;
+    notifyListeners();
+  }
+
+  // Controlla se è necessario il reset della password
+  void checkPasswordReset() {
+    if (_currentUser?.resetPassword == true) {
+      showPasswordResetModal();
+    }
+  }
 }
