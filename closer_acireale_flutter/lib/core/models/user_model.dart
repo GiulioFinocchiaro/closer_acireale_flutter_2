@@ -64,6 +64,7 @@ class UserModel {
     String? email,
     List<RoleModel>? roles,
     DateTime? createdAt,
+    bool? resetPassword,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -71,6 +72,7 @@ class UserModel {
       email: email ?? this.email,
       roles: roles ?? this.roles,
       createdAt: createdAt ?? this.createdAt,
+      resetPassword: resetPassword ?? this.resetPassword,
     );
   }
 
