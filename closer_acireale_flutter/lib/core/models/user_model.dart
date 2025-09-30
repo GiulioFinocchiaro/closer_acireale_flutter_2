@@ -18,8 +18,6 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    print('JSON ${json.toString()}');
-    print('JSON id ${json['id']}');
     return UserModel(
       id: json['id'] is int
         ? json['id']
@@ -33,7 +31,7 @@ class UserModel {
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])
           : null,
-      resetPassword: json['reset_password'],
+      resetPassword: json['reset_password'] == 1,
     );
   }
 

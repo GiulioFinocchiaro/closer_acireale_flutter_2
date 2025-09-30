@@ -198,7 +198,7 @@ class AuthProvider extends ChangeNotifier {
       _clearError();
 
       await _apiService.post('/auth/reset-password', {
-        'password': newPassword,
+        'new_password': newPassword,
       }, token: _token);
 
       // Aggiorna l'utente corrente per rimuovere il flag reset_password
@@ -218,7 +218,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Gestione modal reset password
-  void showPasswordResetModal() {
+  void showPasswordResetModal1() {
     _showPasswordResetModal = true;
     notifyListeners();
   }
@@ -231,7 +231,7 @@ class AuthProvider extends ChangeNotifier {
   // Controlla se è necessario il reset della password
   void checkPasswordReset() {
     if (_currentUser?.resetPassword == true) {
-      showPasswordResetModal();
+      showPasswordResetModal1();
     }
   }
 }
