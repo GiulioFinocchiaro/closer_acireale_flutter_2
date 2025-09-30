@@ -45,11 +45,11 @@ class GlobalTimeline extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
           const Divider(),
           const SizedBox(height: 16),
-          
+
           // Timeline content
           Consumer<SchoolsProvider>(
             builder: (context, schoolsProvider, child) {
@@ -65,9 +65,9 @@ class GlobalTimeline extends StatelessWidget {
     // Simulo alcuni eventi di timeline globale
     // In una implementazione reale, dovresti avere un metodo nel provider
     // che restituisce eventi e materiali di tutte le campagne attive
-    
+
     final globalItems = _buildGlobalTimelineItems(schoolsProvider);
-    
+
     if (globalItems.isEmpty) {
       return const Center(
         child: Padding(
@@ -111,19 +111,23 @@ class GlobalTimeline extends StatelessWidget {
 
     // Aggiungi alcuni eventi di esempio basati sui dati del provider
     // In una implementazione reale, dovresti iterare attraverso tutte le campagne attive
-    
+
     // Esempi di materiali futuri
     final materials = schoolsProvider.lastestMaterialSingleSchool ?? [];
+    DateTime onlyDate(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
+
+    final todayDate = onlyDate(DateTime.now());
     for (final material in materials) {
-      if (material is MaterialModal && material.published_at != null) {
-        if (material.published_at!.isAfter(today)) {
+      if (material.published_at != null) {
+        final publishedDate = onlyDate(material.published_at!);
+        if (!publishedDate.isBefore(todayDate)) {
           items.add(GlobalTimelineItem(
             id: 'material_${material.id}',
             date: material.published_at!,
             title: material.material_name,
             description: material.graphic.description,
             type: GlobalTimelineItemType.material,
-            campaignName: 'Campagna Esempio', // Dovresti avere il nome reale della campagna
+            campaignName: '', // Dovresti avere il nome reale della campagna
           ));
         }
       }
@@ -131,45 +135,10 @@ class GlobalTimeline extends StatelessWidget {
 
     // Aggiungi alcuni eventi di esempio
     // Questi dovrebbero venire dal provider in una implementazione reale
-    if (items.isEmpty) {
-      // Aggiungi eventi di esempio se non ci sono dati reali
-      final exampleEvents = _getExampleEvents();
-      items.addAll(exampleEvents);
-    }
 
     // Ordina per data
     items.sort((a, b) => a.date.compareTo(b.date));
     return items.take(10).toList(); // Mostra solo i prossimi 10 eventi
-  }
-
-  List<GlobalTimelineItem> _getExampleEvents() {
-    final now = DateTime.now();
-    return [
-      GlobalTimelineItem(
-        id: 'example_1',
-        date: now.add(const Duration(days: 2)),
-        title: 'Pubblicazione Manifesto Elettorale',
-        description: 'Pubblicazione ufficiale dei manifesti dei candidati',
-        type: GlobalTimelineItemType.material,
-        campaignName: 'Elezioni Rappresentanti 2024',
-      ),
-      GlobalTimelineItem(
-        id: 'example_2',
-        date: now.add(const Duration(days: 5)),
-        title: 'Dibattito Candidati',
-        description: 'Incontro pubblico con i candidati per le elezioni',
-        type: GlobalTimelineItemType.event,
-        campaignName: 'Elezioni Rappresentanti 2024',
-      ),
-      GlobalTimelineItem(
-        id: 'example_3',
-        date: now.add(const Duration(days: 10)),
-        title: 'Apertura Seggi Elettorali',
-        description: 'Inizio delle votazioni per le elezioni studentesche',
-        type: GlobalTimelineItemType.event,
-        campaignName: 'Elezioni Rappresentanti 2024',
-      ),
-    ];
   }
 
   Widget _buildTimelineItem(BuildContext context, GlobalTimelineItem item, bool showLine) {
@@ -208,9 +177,9 @@ class GlobalTimeline extends StatelessWidget {
                 ),
             ],
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // Content
           Expanded(
             child: Container(
@@ -246,9 +215,9 @@ class GlobalTimeline extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 4),
-                  
+
                   // Titolo
                   Text(
                     item.title,
@@ -257,9 +226,9 @@ class GlobalTimeline extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 2),
-                  
+
                   // Descrizione
                   Text(
                     item.description,
@@ -269,7 +238,7 @@ class GlobalTimeline extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
+
                   // Bottone per maggiori dettagli
                   const SizedBox(height: 8),
                   TextButton(
@@ -331,11 +300,11 @@ class GlobalTimeline extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 16),
-              
+
               // Dettagli
               _buildDetailRow('Campagna:', item.campaignName),
               const SizedBox(height: 12),
@@ -346,12 +315,12 @@ class GlobalTimeline extends StatelessWidget {
               _buildDetailRow('Descrizione:', item.description),
               const SizedBox(height: 12),
               _buildDetailRow(
-                'Data:', 
-                DateFormat('EEEE d MMMM y \'alle\' HH:mm', 'it_IT').format(item.date)
+                  'Data:',
+                  DateFormat('EEEE d MMMM y \'alle\' HH:mm', 'it_IT').format(item.date)
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Azioni
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

@@ -89,6 +89,7 @@ class GraphicsProvider extends ChangeNotifier {
         'file': fileBytes,
         'asset_type': assetType,
         'description': description,
+        'school_id': _selectedSchoolId
       };
 
       if (_isSuperAdmin && _selectedSchoolId != null) {

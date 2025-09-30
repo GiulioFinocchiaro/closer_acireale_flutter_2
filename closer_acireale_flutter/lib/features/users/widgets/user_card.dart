@@ -137,7 +137,7 @@ class UserCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.edit_all'))
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.edit.all'))
                   IconButton(
                     onPressed: onEdit,
                     icon: Icon(Icons.edit, size: 18.w),
@@ -150,7 +150,7 @@ class UserCard extends StatelessWidget {
                     tooltip: 'Modifica utente',
                   ),
                 SizedBox(width: 8.w),
-                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.delete_all'))
+                if (Provider.of<AuthProvider>(context, listen: false).checkPermissionFromUser('users.delete.all'))
                   IconButton(
                     onPressed: onDelete,
                     icon: Icon(Icons.delete, size: 18.w),

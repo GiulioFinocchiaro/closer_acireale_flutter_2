@@ -24,7 +24,7 @@ class HorizontalMenu extends StatelessWidget {
       icon: Icons.people,
       label: 'Utenti',
       route: '/users',
-      requiredPermission: 'users.view_all',
+      requiredPermission: 'users.view_all_users',
     ),
     MenuItemData(
       icon: Icons.campaign,
