@@ -50,7 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
       loadingProvider.hideLoading();
 
       if (success && mounted) {
-        // La navigazione è gestita automaticamente dal router
+        // Se è richiesto il reset della password, NON navigare
+        // Il modal si aprirà automaticamente e bloccherà la navigazione
+        if (authProvider.currentUser?.resetPassword == true) {
+          // Il modal si aprirà automaticamente tramite l'AuthProvider
+          // Non facciamo nulla, lasciamo che il modal gestisca la navigazione
+          return;
+        }
+        
+        // La navigazione normale procede solo se non è richiesto reset
         if (authProvider.hasSchoolPermissions) {
           context.go('/dashboard-schools');
         } else {
