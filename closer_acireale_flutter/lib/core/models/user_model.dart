@@ -14,6 +14,7 @@ class UserModel {
     required this.email,
     required this.roles,
     this.createdAt,
+    this.resetPassword,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
