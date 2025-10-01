@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -85,16 +86,16 @@ class GraphicsProvider extends ChangeNotifier {
     required String description,
   }) async {
     try {
-      final data = <String, dynamic>{
-        'file': fileBytes,
+      if (_selectedSchoolId == null) {
+        throw Exception("Nessuna scuola selezionata per l'upload.");
+      }
+
+      final data = {
+        'file': MultipartFile.fromBytes(fileBytes, filename: fileName),
         'asset_type': assetType,
         'description': description,
-        'school_id': _selectedSchoolId
+        'school_id': _selectedSchoolId.toString(),
       };
-
-      if (_isSuperAdmin && _selectedSchoolId != null) {
-        data['school_id'] = _selectedSchoolId;
-      }
 
       await _apiService.post(
         '/media/upload',
@@ -103,7 +104,7 @@ class GraphicsProvider extends ChangeNotifier {
         isFormData: true,
       );
 
-      await getGraphics(); // Ricarica la lista
+      await getGraphics();
       return true;
     } catch (e) {
       _errorMessage = 'Errore durante il caricamento: $e';
