@@ -1,17 +1,29 @@
 <component name="libraryTable">
   <library name="Dart SDK">
     <CLASSES>
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/async" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/collection" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/convert" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/core" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/developer" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/html" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/io" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/isolate" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/math" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/mirrors" />
-      <root url="file:///home/giulio-finocchiaro/development/flutter/bin/cache/dart-sdk/lib/typed_data" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/_internal" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/async" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/cli" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/collection" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/concurrent" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/convert" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/core" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/developer" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/ffi" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/html" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/indexed_db" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/io" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/isolate" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/js" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/js_interop" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/js_interop_unsafe" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/js_util" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/math" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/mirrors" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/svg" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/typed_data" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/web_audio" />
+      <root url="file:///opt/homebrew/Cellar/dart/3.9.4/libexec/lib/web_gl" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
